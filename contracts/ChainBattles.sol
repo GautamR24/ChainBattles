@@ -38,10 +38,13 @@ contract ChainBattles is ERC721URIStorage {
             '<text x="50%" y="50%" class="base" dominant-baseline="middle" text-anchor="middle">',
             "Levels: ",
             getLevels(tokenId),
+            
             "Speed: ",
             getSpeed(tokenId),
+            
             "Strength: ",
             getStrength(tokenId),
+            
             "Life: ",
             getLife(tokenId),
             "</text>",
@@ -117,12 +120,25 @@ contract ChainBattles is ERC721URIStorage {
             ownerOf(tokenId) == msg.sender,
             "You must own this token to train it"
         );
+        uint number = 100;
         uint256 currentLevel = tokenIdToLevels[tokenId].Level;
-        tokenIdToLevels[tokenId].Level = currentLevel + 1;
-        tokenIdToLevels[tokenId].Level = currentLevel + 1;
-        tokenIdToLevels[tokenId].Speed = currentLevel + 1;
-        tokenIdToLevels[tokenId].Strength = currentLevel + 1;
-        tokenIdToLevels[tokenId].Life = currentLevel + 1;
+        tokenIdToLevels[tokenId].Level = currentLevel;
+        tokenIdToLevels[tokenId].Speed = random(number);
+        tokenIdToLevels[tokenId].Strength = random(number+1);
+        tokenIdToLevels[tokenId].Life = random(number+2);
         _setTokenURI(tokenId, getTokenURI(tokenId));
+    }
+
+    function random(uint256 number) public view returns (uint256) {
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp,
+                        block.difficulty,
+                        msg.sender
+                    )
+                )
+            ) % number;
     }
 }
